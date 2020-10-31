@@ -1,5 +1,7 @@
 # this is the standard Python library
 import os
+#we are using data from json so we need to import it
+import json
 #First we import the Flask class
 from flask import Flask, render_template
 
@@ -16,17 +18,33 @@ def index():
 
 @app.route("/about")
 def about():
-    return render_template("about.html")
+    #first we open an empty list called data
+    data = []
+    #then we tell Python to take data from our json file. This is called "with block"
+    with open("data/company.json", "r") as json.data:
+        data = json.load(json.data)
+    return render_template("about.html", page_title="About", company=data)
+
+
+@app.route("/about/<member_name>")
+def about_member(member_name):
+    member={}
+    with open("data/company.json", "r") as json.data:
+         data = json.load(json.data)
+         for obj in data:
+             if obj["url"] == member_name:
+                 member = obj
+    return "<h1>" + member["name"] + "</h1>"
 
 
 @app.route("/contact")
 def contact():
-    return render_template("contact.html")
+    return render_template("contact.html", page_title="Contact")
 
 
 @app.route("/careers")
 def careers():
-    return render_template("careers.html")
+    return render_template("careers.html", page_title="Careers")
 
 
 if __name__ == "__main__":
